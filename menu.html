@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoSlug Tracker</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
+
+    /* Sidebar toggle button */
+    .sidebar-toggle {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background: #2c3e50;
+      border: none;
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 1100;
+    }
+
+    .sidebar-toggle img {
+      display: block;
+    }
+
+    /* Sidebar overlay */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 1000;
+    }
+
+    .sidebar-overlay.show {
+      display: block;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100%;
+      background: #2c3e50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      transition: left 0.3s ease;
+      z-index: 1050;
+    }
+
+    .sidebar.show {
+      left: 0;
+    }
+
+    .sidebar-header {
+      text-align: center;
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-logo img {
+      width: 50px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .sidebar-subtitle {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 10px 0;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      text-decoration: none;
+      color: white;
+      font-size: 16px;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-item.active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Menu Toggle -->
+  <button class="sidebar-toggle" onclick="toggleSidebar()" title="Menu">
+    <img src="images/menu-icon.svg" alt="Menu" style="width: 20px; height: 20px;">
+  </button>
+
+  <!-- Sidebar Overlay -->
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- Left Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <img src="images/logo.svg" alt="EcoSlug Tracker Logo">
+      </div>
+      <div class="sidebar-title">EcoSlug Tracker</div>
+      <div class="sidebar-subtitle">Pest Management</div>
+    </div>
+
+    <div class="sidebar-nav">
+      <a href="index.html" class="sidebar-item active" onclick="setActiveNavItem(this)">
+        <img src="images/home-icon.svg" alt="Home" class="sidebar-icon">
+        <span class="sidebar-text">Home</span>
+      </a>
+
+      <a href="log.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+        <img src="images/log-icon.svg" alt="Log" class="sidebar-icon">
+        <span class="sidebar-text">Application Log</span>
+      </a>
+
+      <a href="weather.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+        <img src="images/weather-icon.svg" alt="Weather" class="sidebar-icon">
+        <span class="sidebar-text">Weather</span>
+      </a>
+
+      <a href="pest-comparative-calculator.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+        <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="sidebar-icon">
+        <span class="sidebar-text">Pest Comparative Calculator</span>
+      </a>
+
+      <a href="pest-reduction-calculator.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+        <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="sidebar-icon">
+        <span class="sidebar-text">Pest Reduction Calculator</span>
+      </a>
+
+      <hr>
+
+      <button class="sidebar-item" onclick="openSettings()">
+        <img src="images/settings-icon.svg" alt="Settings" class="sidebar-icon">
+        <span class="sidebar-text">Settings</span>
+      </button>
+
+      <button class="sidebar-item" onclick="openAbout()">
+        <img src="images/about-icon.svg" alt="About" class="sidebar-icon">
+        <span class="sidebar-text">About</span>
+      </button>
+
+      <button class="sidebar-item" onclick="openTerms()">
+        <img src="images/terms-icon.svg" alt="Terms" class="sidebar-icon">
+        <span class="sidebar-text">Terms & Conditions</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("show");
+      document.getElementById("sidebarOverlay").classList.toggle("show");
+    }
+
+    function closeSidebar() {
+      document.getElementById("sidebar").classList.remove("show");
+      document.getElementById("sidebarOverlay").classList.remove("show");
+    }
+
+    function setActiveNavItem(el) {
+      // remove active class from all items
+      document.querySelectorAll(".sidebar-item").forEach(item => {
+        item.classList.remove("active");
+      });
+      // add active class to clicked one
+      el.classList.add("active");
+      closeSidebar();
+    }
+
+    // Example dummy functions for buttons
+    function openSettings() { alert("Settings clicked!"); }
+    function openAbout() { alert("About clicked!"); }
+    function openTerms() { alert("Terms clicked!"); }
+  </script>
+
+</body>
+</html>
