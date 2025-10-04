@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Google Auth Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .loading { background: #fff3cd; color: #856404; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Google Auth Quick Test</h1>
+    
+    <div id="status" class="status loading">Testing...</div>
+    
+    <div id="details">
+        <p><strong>Step 1:</strong> <span id="step1">Loading...</span></p>
+        <p><strong>Step 2:</strong> <span id="step2">Waiting...</span></p>
+        <p><strong>Step 3:</strong> <span id="step3">Waiting...</span></p>
+        <p><strong>Step 4:</strong> <span id="step4">Waiting...</span></p>
+    </div>
+
+    <button onclick="testManual()" id="manualBtn" disabled>Test Manual Login</button>
+    <button onclick="window.open('debug-auth.html')" style="background: #6c757d; color: white;">Open Debug Page</button>
+
+    <script>
+        let step = 0;
+        let startTime = Date.now();
+
+        function updateStep(stepNum, text, success = true) {
+            const element = document.getElementById(`step${stepNum}`);
+            const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+            element.textContent = `${text} (${elapsed}s)`;
+            element.style.color = success ? 'green' : 'red';
+        }
+
+        function updateStatus(text, type) {
+            const status = document.getElementById('status');
+            status.textContent = text;
+            status.className = `status ${type}`;
+        }
+
+        // Quick test sequence
+        async function quickTest() {
+            try {
+                updateStep(1, 'Testing network connection...', true);
+                
+                // Test 1: Network connectivity
+                try {
+                    await fetch('https://www.google.com', { mode: 'no-cors' });
+                    updateStep(1, 'Network connection OK ✓', true);
+                } catch (error) {
+                    updateStep(1, 'Network connection failed ❌', false);
+                    updateStatus('No internet connection', 'error');
+                    return;
+                }
+
+                updateStep(2, 'Loading Google API script...', true);
+                
+                // Test 2: Load Google API
+                try {
+                    await new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = 'https://apis.google.com/js/api.js';
+                        script.onload = resolve;
+                        script.onerror = reject;
+                        document.head.appendChild(script);
+                        
+                        // 5 second timeout
+                        setTimeout(() => reject(new Error('Timeout')), 5000);
+                    });
+                    updateStep(2, 'Google API script loaded ✓', true);
+                } catch (error) {
+                    updateStep(2, 'Google API script failed to load ❌', false);
+                    updateStatus('Cannot load Google APIs - check internet/firewall', 'error');
+                    return;
+                }
+
+                updateStep(3, 'Initializing Google Auth client...', true);
+                
+                // Test 3: Initialize Google Auth
+                try {
+                    await new Promise((resolve, reject) => {
+                        gapi.load('auth2:client', {
+                            callback: resolve,
+                            onerror: reject
+                        });
+                        setTimeout(() => reject(new Error('Timeout')), 5000);
+                    });
+                    
+                    updateStep(3, 'Google Auth client loaded ✓', true);
+                } catch (error) {
+                    updateStep(3, 'Google Auth client failed ❌', false);
+                    updateStatus('Google Auth client initialization failed', 'error');
+                    return;
+                }
+
+                updateStep(4, 'Testing with your Client ID...', true);
+                
+                // Test 4: Initialize with your client ID
+                try {
+                    console.log('Attempting to initialize with client ID...');
+                    
+                    await gapi.client.init({
+                        client_id: '973644214985-cgb7ehk0d902nhbmja3vkn6ialt8uio9.apps.googleusercontent.com',
+                        scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+                        discoveryDocs: [],
+                        cookie_policy: 'single_host_origin'
+                    });
+                    
+                    console.log('Client init completed, checking auth instance...');
+                    
+                    // Try multiple ways to get the auth instance
+                    let authInstance = null;
+                    
+                    // Method 1: Standard way
+                    try {
+                        authInstance = gapi.auth2.getAuthInstance();
+                        console.log('Method 1 - getAuthInstance():', authInstance);
+                    } catch (e) {
+                        console.log('Method 1 failed:', e.message);
+                    }
+                    
+                    // Method 2: Try to initialize auth2 explicitly
+                    if (!authInstance) {
+                        try {
+                            console.log('Trying explicit auth2 init...');
+                            authInstance = await gapi.auth2.init({
+                                client_id: '973644214985-cgb7ehk0d902nhbmja3vkn6ialt8uio9.apps.googleusercontent.com',
+                                scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+                                cookie_policy: 'single_host_origin'
+                            });
+                            console.log('Method 2 - explicit init:', authInstance);
+                        } catch (e) {
+                            console.log('Method 2 failed:', e.message);
+                        }
+                    }
+                    
+                    if (authInstance) {
+                        updateStep(4, 'Client ID configuration OK ✓', true);
+                        updateStatus('All tests passed! Google Auth should work.', 'success');
+                        document.getElementById('manualBtn').disabled = false;
+                    } else {
+                        // Show detailed debugging info
+                        console.log('gapi object:', gapi);
+                        console.log('gapi.auth2:', gapi.auth2);
+                        console.log('gapi.client:', gapi.client);
+                        
+                        updateStep(4, 'Auth instance not found ❌', false);
+                        updateStatus('Auth instance not found - this usually means Client ID issues. Check console for details.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Full error object:', error);
+                    updateStep(4, 'Client ID configuration failed ❌', false);
+                    if (error.message.includes('invalid_client') || error.message.includes('unauthorized_client')) {
+                        updateStatus('❌ Invalid Client ID - Your Client ID is not properly configured in Google Cloud Console', 'error');
+                    } else if (error.message.includes('redirect_uri_mismatch')) {
+                        updateStatus('❌ Redirect URI mismatch - Add your current URL to authorized origins in Google Cloud Console', 'error');
+                    } else {
+                        updateStatus(`❌ Configuration error: ${error.message}`, 'error');
+                    }
+                    return;
+                }
+                
+            } catch (error) {
+                console.error('Quick test failed:', error);
+                updateStatus(`Unexpected error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testManual() {
+            try {
+                updateStatus('Attempting sign-in...', 'loading');
+                const authInstance = gapi.auth2.getAuthInstance();
+                const user = await authInstance.signIn();
+                
+                if (user.isSignedIn()) {
+                    const profile = user.getBasicProfile();
+                    updateStatus(`Success! Signed in as: ${profile.getName()}`, 'success');
+                } else {
+                    updateStatus('Sign-in was cancelled', 'error');
+                }
+            } catch (error) {
+                updateStatus(`Sign-in failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Start the test
+        quickTest();
+    </script>
+</body>
+</html>

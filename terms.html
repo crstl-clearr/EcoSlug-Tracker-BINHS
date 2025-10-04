@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5, user-scalable=yes">
+    <title>EcoSlug Tracker - Terms and Conditions</title>
+    <script>
+        // Immediate theme initialization to prevent FOUC
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme') || 'system';
+                const root = document.documentElement;
+                
+                // Remove any existing theme attributes first
+                root.removeAttribute('data-theme');
+                
+                if (theme === 'light') {
+                    root.setAttribute('data-theme', 'light');
+                } else if (theme === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                } else if (theme === 'system') {
+                    // For system theme, check media query and set explicitly
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        root.setAttribute('data-theme', 'dark');
+                    } else {
+                        root.setAttribute('data-theme', 'light');
+                    }
+                }
+            } catch (e) {
+                // Fallback to light theme if localStorage fails
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Left Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="images/logo.svg" alt="EcoSlug Tracker Logo">
+            </div>
+            <div class="sidebar-title">EcoSlug Tracker</div>
+            <div class="sidebar-subtitle">Pest Management</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <a href="log.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/log-icon.svg" alt="Log" class="sidebar-icon">
+                <span class="sidebar-text">Application Log</span>
+            </a>
+
+            <a href="weather.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/weather-icon.svg" alt="Weather" class="sidebar-icon">
+                <span class="sidebar-text">Weather Monitoring</span>
+            </a>
+
+            <a href="calculator.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Reduction Calculator</span>
+            </a>
+
+            <a href="pest-count.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Comparative Calculator</span>
+            </a>
+
+            <hr style="margin: 1rem 1.5rem; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+
+            <a href="settings.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/settings-icon.svg" alt="Settings" class="sidebar-icon">
+                <span class="sidebar-text">Settings</span>
+            </a>
+
+            <a href="terms.html" class="sidebar-item active" onclick="setActiveNavItem(this)">
+                <img src="images/terms-icon.svg" alt="Terms" class="sidebar-icon">
+                <span class="sidebar-text">Terms & Conditions</span>
+            </a>
+
+            <a href="about.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/about-icon.svg" alt="About" class="sidebar-icon">
+                <span class="sidebar-text">About</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-layout" id="mainLayout">
+        <div class="container">
+            <header class="header">
+               <!-- Mobile Menu Button -->
+<button class="menu-button" onclick="openSidebar()" title="Open Menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <rect x="3" y="6" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="11" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="16" width="18" height="2" rx="1"></rect>
+    </svg>
+</button>
+
+            
+            <button class="back-button" onclick="navigateHome()" title="Back to Home">
+                <img src="images/back-icon.svg" alt="Back" style="width: 20px; height: 20px;">
+            </button>
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                    <img src="images/terms-icon.svg" alt="Terms" class="logo-icon" style="width: 60px; height: 60px; filter: brightness(0) invert(1);">
+                </div>
+            </div>
+            <h1 class="app-title">Terms and Conditions</h1>
+            <p class="app-subtitle">Legal Terms and Usage Guidelines</p>
+        </header>
+
+        <main class="terms-container">
+            <!-- Last Updated -->
+            <div class="terms-section">
+                <div class="last-updated">
+                    <strong>Last Updated:</strong> September 2025
+                </div>
+            </div>
+
+            <!-- Introduction -->
+            <div class="terms-section">
+                <div class="terms-title">
+                    1. Introduction and Acceptance
+                </div>
+                
+                <div class="terms-content">
+                    <p>Welcome to EcoSlug Tracker ("the App", "Service"). By using this application, you agree to comply with and be bound by the following terms and conditions ("Terms"). Please read these Terms carefully before using the App.</p>
+                    
+                    <p>If you do not agree with any part of these Terms, you must not use the App. Your use of the App constitutes acceptance of these Terms and any future modifications.</p>
+                </div>
+            </div>
+
+            <!-- Purpose and Scope -->
+            <div class="terms-section">
+                <div class="terms-title">
+                    2. Purpose and Scope
+                </div>
+                
+                <div class="terms-content">
+                    <p><strong>EcoSlug Tracker</strong> is designed as a record-keeping tool for pesticide applications. The App is intended for:</p>
+                    <ul>
+                        <li>Agricultural professionals and farmers</li>
+                        <li>Garden enthusiasts and homeowners</li>
+                        <li>Pest control specialists</li>
+                        <li>Anyone needing to track pesticide applications</li>
+                    </ul>
+                    
+                    <p>The App provides features for logging applications, monitoring weather conditions, tracking pest counts, and exporting data for record-keeping purposes.</p>
+                </div>
+            </div>
+
+            <!-- User Responsibilities -->
+            <div class="terms-section">
+                <div class="terms-title">
+                    3. User Responsibilities and Obligations
+                </div>
+                
+                <div class="terms-content">
+                    <p>By using EcoSlug Tracker, you agree to:</p>
+                    
+                    <div class="responsibility-item">
+                        <h4>3.1 Legal Compliance</h4>
+                        <ul>
+                            <li>Follow all applicable local, state, federal, and international laws regarding pesticide use</li>
+                            <li>Comply with all relevant agricultural and environmental regulations</li>
+                            <li>Obtain proper licenses and certifications as required by law</li>
+                            <li>Follow manufacturer instructions for all pesticide products</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="responsibility-item">
+                        <h4>3.2 Safety Practices</h4>
+                        <ul>
+                            <li>Use appropriate personal protective equipment (PPE)</li>
+                            <li>Follow safety guidelines when handling and applying pesticides</li>
+                            <li>Ensure proper storage and disposal of pesticide products</li>
+                            <li>Consider environmental impact and non-target species</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="responsibility-item">
+                        <h4>3.3 Data Accuracy</h4>
+                        <ul>
+                            <li>Provide accurate and truthful information when using the App</li>
+                            <li>Keep records up-to-date and complete</li>
+                            <li>Verify data accuracy before making decisions based on App data</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disclaimers -->
+            <div class="terms-section">
+                <div class="terms-title">
+                    4. Disclaimers and Limitations
+                </div>
+                
+                <div class="terms-content">
+                    <div class="disclaimer-item">
+                        <h4>4.1 "As-Is" Provision</h4>
+                        <p>EcoSlug Tracker is provided "as-is" without warranties of any kind, either express or implied. We make no guarantees about the accuracy, completeness, or reliability of the App or its data.</p>
+                    </div>
+                    
+                    <div class="disclaimer-item">
+                        <h4>4.2 Weather Data</h4>
+                        <p>Weather information is provided for reference only. Users must verify current conditions and forecasts through official meteorological sources before making application decisions.</p>
+                    </div>
+                    
+                    <div class="disclaimer-item">
+                        <h4>4.3 Professional Advice</h4>
+                        <p>The App does not provide professional agricultural, environmental, or legal advice. Users should consult with qualified professionals for specific guidance.</p>
+                    </div>
+                    
+                    <div class="disclaimer-item">
+                        <h4>4.4 Effectiveness Calculations</h4>
+                        <p>Pest count effectiveness calculations are mathematical estimates only and should not be the sole basis for treatment decisions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liability -->
+            <div class="terms-section">
+                <div class="terms-title">
+                    5. Limitation of Liability
+                </div>
+                
+                <div class="terms-content">
+                    <p>To the maximum extent permitted by law, the developers and distributors of EcoSlug Tracker shall not be liable for:</p>
+                    
+                    <ul>
+                        <li>Any direct, indirect, incidental, or consequential damages</li>
+                        <li>Damages resulting from pesticide applications or related activities</li>
+                        <li>Environmental damage or harm to non-target species</li>
+                        <li>Data loss or corruption</li>
+                        <li>Regulatory violations or compliance issues</li>
+                        <li>Business losses or interruptions</li>
+                        <li>Health issues or injuries related to pesticide use</li>
+                    </ul>
+                    
+                    <p><strong>Users assume all risks</strong> associated with pesticide use and rely on the App at their own discretion.</p>
+                </div>
+            </div>
+
+            <!-- Privacy -->
+            <div class="terms-section">
+                <div class="terms-title">
+                    6. Privacy and Data Handling
+                </div>
+                
+                <div class="terms-content">
+                    <div class="privacy-item">
+                        <h4>6.1 Local Storage</h4>
+                        <p>All user data is stored locally on your device using browser local storage. No data is transmitted to external servers or third parties.</p>
+                    </div>
+                    
+                    <div class="privacy-item">
+                        <h4>6.2 No Data Collection</h4>
+                        <p>We do not collect, store, or share any personal information, application data, or usage analytics.</p>
+                    </div>
+                    
+                    <div class="privacy-item">
+                        <h4>6.3 Location Data</h4>
+                        <p>Location data (if used for weather features) is processed locally and not shared externally.</p>
+                    </div>
+                    
+                    <div class="privacy-item">
+                        <h4>6.4 Data Backup</h4>
+                        <p>Users are responsible for backing up their data using the export functionality. Data loss may occur due to browser settings, device issues, or software updates.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intellectual Property -->
+            <div class="terms-section">
+                <div class="terms-title">
+                    7. Intellectual Property
+                </div>
+                
+                <div class="terms-content">
+                    <p>EcoSlug Tracker is open source software released under the MIT License. Users are free to:</p>
+                    <ul>
+                        <li>Use the software for any purpose</li>
+                        <li>Modify and distribute the software</li>
+                        <li>Include the software in commercial products</li>
+                    </ul>
+                    
+                    <p>The software is provided without warranty, and users assume responsibility for its use.</p>
+                </div>
+            </div>
+
+            <!-- Modifications -->
+            <div class="terms-section">
+                <div class="terms-title">
+                    8. Modifications to Terms
+                </div>
+                
+                <div class="terms-content">
+                    <p>These Terms may be updated from time to time. Significant changes will be communicated through the App or documentation. Continued use after changes constitutes acceptance of the modified Terms.</p>
+                    
+                    <p>Users are encouraged to review these Terms periodically to stay informed of any updates.</p>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="terms-section">
+                <div class="terms-title">
+                    9. Contact Information
+                </div>
+                
+                <div class="terms-content">
+                    <p>For questions about these Terms or the App, users may:</p>
+                    <ul>
+                        <li>Review the documentation and help resources</li>
+                        <li>Check the open source repository for updates</li>
+                        <li>Consult with legal or agricultural professionals as needed</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Agreement -->
+            <div class="terms-section agreement-section">
+                <div class="terms-title">
+                    Agreement Acknowledgment
+                </div>
+                
+                <div class="terms-content">
+                    <p><strong>By using EcoSlug Tracker, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</strong></p>
+                    
+                    <p>You also acknowledge that you understand the responsibilities and risks associated with pesticide use and will use the App as a supplementary tool only, not as a substitute for professional judgment and regulatory compliance.</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+<div class="quick-actions">
+  <h3 style="text-align: center; margin-bottom: 1rem; color: #333;">Quick Actions</h3>
+  <div class="button-group">
+    <button class="nav-button log-button" onclick="window.location.href='log.html'">
+      <img src="images/log-icon.svg" alt="Log" class="button-icon">
+      <span class="button-text">Log</span>
+    </button>
+
+    <button class="nav-button weather-button" onclick="window.location.href='weather.html'">
+      <img src="images/weather-icon.svg" alt="Weather Monitoring" class="button-icon">
+      <span class="button-text">Weather Monitoring</span>
+    </button>
+    
+    <button class="nav-button calculator-button" onclick="window.location.href='calculator.html'">
+      <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="button-icon">
+      <span class="button-text">Pest Reduction Calculator</span>
+    </button>
+
+    <button class="nav-button pest-button" onclick="window.location.href='pest-count.html'">
+      <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="button-icon">
+      <span class="button-text">Pest Comparative Calculator</span>
+    </button>
+  </div>
+</div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/menu.js"></script>
+    <script>
+        // Terms page specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Track that user has viewed terms (optional)
+            const viewedTerms = {
+                date: new Date().toISOString(),
+                version: '1.0'
+            };
+            localStorage.setItem('termsViewed', JSON.stringify(viewedTerms));
+
+            console.log('Terms and conditions page loaded');
+        });
+    </script>
+
+</body>
+</html>

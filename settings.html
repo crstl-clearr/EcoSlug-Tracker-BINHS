@@ -1,0 +1,791 @@
+t<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5, user-scalable=yes">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com https://accounts.google.com https://ssl.gstatic.com; connect-src 'self' https://apis.google.com https://accounts.google.com https://www.googleapis.com; frame-src https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:">
+    <title>EcoSlug Tracker - Settings</title>
+    <script>
+        // Immediate theme initialization to prevent FOUC
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme') || 'system';
+                const root = document.documentElement;
+                
+                // Remove any existing theme attributes first
+                root.removeAttribute('data-theme');
+                
+                if (theme === 'light') {
+                    root.setAttribute('data-theme', 'light');
+                } else if (theme === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                } else if (theme === 'system') {
+                    // For system theme, check media query and set explicitly
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        root.setAttribute('data-theme', 'dark');
+                    } else {
+                        root.setAttribute('data-theme', 'light');
+                    }
+                }
+            } catch (e) {
+                // Fallback to light theme if localStorage fails
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        }
+        
+        // Add CSS styles for authentication UI
+        const authStyles = `
+            .auth-container {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .auth-button {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 16px;
+                background: #4285f4;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                transition: background-color 0.3s ease;
+            }
+            
+            .auth-button:hover {
+                background: #3367d6;
+            }
+            
+            .google-icon {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .user-profile {
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 16px;
+                background: #f9f9f9;
+            }
+            
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .user-avatar {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+            
+            .user-name {
+                font-weight: 600;
+                color: #333;
+                font-size: 16px;
+            }
+            
+            .user-email {
+                color: #666;
+                font-size: 14px;
+            }
+            
+            .cloud-controls {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            
+            .cloud-controls .setting-button {
+                flex: 1;
+                min-width: 140px;
+            }
+            
+            .cloud-controls .setting-button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+            
+            @media (max-width: 480px) {
+                .cloud-controls {
+                    flex-direction: column;
+                }
+                
+                .user-info {
+                    flex-direction: column;
+                    text-align: center;
+                }
+            }
+        `;
+        
+        // Inject authentication styles
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = authStyles;
+        document.head.appendChild(styleSheet);
+    })();
+</script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Left Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="images/logo.svg" alt="EcoSlug Tracker Logo">
+            </div>
+            <div class="sidebar-title">EcoSlug Tracker</div>
+            <div class="sidebar-subtitle">Pest Management</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <a href="log.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/log-icon.svg" alt="Log" class="sidebar-icon">
+                <span class="sidebar-text">Application Log</span>
+            </a>
+
+            <a href="weather.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/weather-icon.svg" alt="Weather" class="sidebar-icon">
+                <span class="sidebar-text">Weather Monitoring</span>
+            </a>
+
+            <a href="calculator.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Reduction Calculator</span>
+            </a>
+
+            <a href="pest-count.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Comparative Calculator</span>
+            </a>
+
+            <hr style="margin: 1rem 1.5rem; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+
+            <a href="settings.html" class="sidebar-item active" onclick="setActiveNavItem(this)">
+                <img src="images/settings-icon.svg" alt="Settings" class="sidebar-icon">
+                <span class="sidebar-text">Settings</span>
+            </a>
+
+            <a href="terms.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/terms-icon.svg" alt="Terms" class="sidebar-icon">
+                <span class="sidebar-text">Terms & Conditions</span>
+            </a>
+
+            <a href="about.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/about-icon.svg" alt="About" class="sidebar-icon">
+                <span class="sidebar-text">About</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-layout" id="mainLayout">
+        <div class="container">
+            <header class="header">
+              <!-- Mobile Menu Button -->
+<button class="menu-button" onclick="openSidebar()" title="Open Menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <rect x="3" y="6" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="11" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="16" width="18" height="2" rx="1"></rect>
+    </svg>
+</button>
+
+            
+            <button class="back-button" onclick="navigateHome()" title="Back to Home">
+                <img src="images/back-icon.svg" alt="Back" style="width: 20px; height: 20px;">
+            </button>
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                    <img src="images/settings-icon.svg" alt="Settings" class="logo-icon" style="width: 60px; height: 60px; filter: brightness(0) invert(1);">
+                </div>
+            </div>
+            <h1 class="app-title">Settings</h1>
+            <p class="app-subtitle">Customize your EcoSlug Tracker experience</p>
+        </header>
+
+        <main class="settings-container">
+
+            <!-- Application Settings -->
+            <div class="settings-section">
+                <div class="settings-title">
+                    Application Settings
+                </div>
+                
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <label class="setting-label" for="defaultReminderDays">
+                            Default Application Reminder (Days)
+                        </label>
+                        <select class="setting-input" id="defaultReminderDays">
+                            <option value="7">7 days</option>
+                            <option value="14" selected>14 days</option>
+                            <option value="21">21 days</option>
+                            <option value="30">30 days</option>
+                        </select>
+                        <p class="setting-description">How often to remind you about the next pesticide application</p>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label" for="autoLocation">
+                            Auto-detect Location for Weather
+                        </label>
+                        <label class="toggle">
+                            <input type="checkbox" id="autoLocation" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <p class="setting-description">Automatically use your current location for weather data</p>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label" for="temperatureUnit">
+                            Temperature Unit
+                        </label>
+                        <select class="setting-input" id="temperatureUnit">
+                            <option value="celsius" selected>Celsius (°C)</option>
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                        </select>
+                        <p class="setting-description">Choose your preferred temperature display unit</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Management -->
+            <div class="settings-section">
+                <div class="settings-title">
+                    Data Management
+                </div>
+                
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            Export Application Data
+                        </label>
+                        <button class="setting-button" onclick="exportAllData()">
+                            <img src="images/terms-icon.svg" alt="Export" class="button-icon-small">
+                            Export All Data
+                        </button>
+                        <p class="setting-description">Download all your pesticide application logs and pest count data</p>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            Import Data
+                        </label>
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                        <button class="setting-button" onclick="document.getElementById('importFile').click()">
+                            <img src="images/settings-icon.svg" alt="Import" class="button-icon-small">
+                            Import Data
+                        </button>
+                        <p class="setting-description">Import previously exported data (JSON format)</p>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            Clear All Data
+                        </label>
+                        <button class="setting-button danger" onclick="clearAllData()">
+                            <span class="button-icon-small">⚠️</span>
+                            Clear All Data
+                        </button>
+                        <p class="setting-description">Permanently delete all application logs and settings (cannot be undone)</p>
+                    </div>
+                </div>
+            </div>
+            
+           <!-- Cloud Sync & Account -->
+           <div class="settings-section">
+               <div class="settings-title">Cloud Sync & Account</div>
+               <div class="settings-group">
+                   <div class="setting-item">
+                       <label class="setting-label">Google Account</label>
+
+                       <!-- Firebase Google Sign-In -->
+                       <button id="signInBtn" class="auth-button" onclick="signInWithGoogle()" style="display: block;">
+                           <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" class="google-icon">
+                           Sign in with Google
+                       </button>
+
+                       <!-- User Info -->
+                       <div id="user-info" style="margin-top: 20px;"></div>
+
+                       <!-- Sign out -->
+                       <button id="signOutBtn" class="setting-button danger" onclick="signOut()" style="display:none; margin-top: 10px;">
+                           Sign Out
+                       </button>
+                   </div>
+               </div>
+           </div>
+            
+            <!-- Privacy & Storage -->
+            <div class="settings-section">
+                <div class="settings-title">
+                    Privacy & Storage
+                </div>
+                
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            Data Storage
+                        </label>
+                        <div class="storage-info" id="syncStatus">
+                            <p><strong>Storage Location:</strong> Local device only</p>
+                            <p><strong>Data Sharing:</strong> None - all data stays on your device</p>
+                            <p><strong>Current Usage:</strong> <span id="storageUsage">Calculating...</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label class="setting-label" for="saveLocation">
+                            Remember Location Data
+                        </label>
+                        <label class="toggle">
+                            <input type="checkbox" id="saveLocation" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <p class="setting-description">Store location data for weather forecasts (stored locally only)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+<div class="quick-actions">
+  <h3 style="text-align: center; margin-bottom: 1rem; color: #333;">Quick Actions</h3>
+  <div class="button-group">
+    <button class="nav-button log-button" onclick="window.location.href='log.html'">
+      <img src="images/log-icon.svg" alt="Log" class="button-icon">
+      <span class="button-text">Log</span>
+    </button>
+
+    <button class="nav-button weather-button" onclick="window.location.href='weather.html'">
+      <img src="images/weather-icon.svg" alt="Weather Monitoring" class="button-icon">
+      <span class="button-text">Weather Monitoring</span>
+    </button>
+    
+    <button class="nav-button calculator-button" onclick="window.location.href='calculator.html'">
+      <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="button-icon">
+      <span class="button-text">Pest Reduction Calculator</span>
+    </button>
+
+    <button class="nav-button pest-button" onclick="window.location.href='pest-count.html'">
+      <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="button-icon">
+      <span class="button-text">Pest Comparative Calculator</span>
+    </button>
+  </div>
+</div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Settings-specific functionality
+        
+        // Load saved settings on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            calculateStorageUsage();
+            initializeThemeSettings();
+            initializeGoogleAuth();
+        });
+
+        // Initialize Google authentication
+        function initializeGoogleAuth() {
+            // Show sign-in button initially
+            const signInBtn = document.getElementById('googleSignInBtn');
+            const userProfile = document.getElementById('userProfile');
+            const authStatus = document.getElementById('authStatus');
+            
+            // Check if running from file:// protocol
+            if (window.location.protocol === 'file:') {
+                if (authStatus) {
+                    authStatus.innerHTML = `
+                        <div style="color: #856404; background: #fff3cd; padding: 8px; border-radius: 4px; font-size: 11px;">
+                            ℹ️ <strong>Local Mode:</strong> Google Sign-in requires HTTP server.<br>
+                            Your app works locally without cloud sync.
+                        </div>
+                    `;
+                }
+                if (signInBtn) {
+                    signInBtn.disabled = true;
+                    signInBtn.innerHTML = '🔒 HTTP Server Required';
+                    signInBtn.style.background = '#6c757d';
+                }
+                return;
+            }
+            
+            if (signInBtn) signInBtn.style.display = 'inline-flex';
+            if (userProfile) userProfile.style.display = 'none';
+            
+            // Wait for auth service to initialize and update UI
+            let attempts = 0;
+            const checkAuth = () => {
+                attempts++;
+                
+                if (typeof googleAuthService !== 'undefined') {
+                    console.log('Google auth service found, updating UI');
+                    
+                    // Check if auth was disabled due to file:// protocol
+                    if (!googleAuthService.isInitialized && window.location.protocol !== 'file:') {
+                        if (authStatus) authStatus.textContent = 'Connecting to Google...';
+                        
+                        // Give it a moment to fully initialize
+                        setTimeout(() => {
+                            updateAuthButtons();
+                            if (googleAuthService.isInitialized) {
+                                googleAuthService.updateUserInterface();
+                                if (authStatus) authStatus.style.display = 'none';
+                            } else {
+                                if (authStatus) {
+                                    authStatus.textContent = 'Google authentication failed to initialize';
+                                    authStatus.style.color = '#f44336';
+                                }
+                            }
+                        }, 2000);
+                    } else {
+                        if (authStatus) authStatus.textContent = 'Google authentication ready';
+                        updateAuthButtons();
+                        if (authStatus) authStatus.style.display = 'none';
+                    }
+                } else if (attempts < 10) {
+                    // Keep trying for up to 5 seconds
+                    if (authStatus) authStatus.textContent = `Initializing Google authentication... (${attempts}/10)`;
+                    setTimeout(checkAuth, 500);
+                } else {
+                    console.warn('Google auth service not found after 5 seconds');
+                    if (authStatus) {
+                        authStatus.textContent = 'Google authentication unavailable. Please check your internet connection.';
+                        authStatus.style.color = '#f44336';
+                    }
+                    if (signInBtn) {
+                        signInBtn.disabled = true;
+                        signInBtn.textContent = 'Google Auth Unavailable';
+                    }
+                }
+            };
+            
+            checkAuth();
+        }
+
+        // Update authentication buttons based on sign-in status
+        function updateAuthButtons() {
+            const syncToCloudBtn = document.getElementById('syncToCloudBtn');
+            const syncFromCloudBtn = document.getElementById('syncFromCloudBtn');
+            
+            if (googleAuthService && googleAuthService.isSignedIn()) {
+                if (syncToCloudBtn) syncToCloudBtn.disabled = false;
+                if (syncFromCloudBtn) syncFromCloudBtn.disabled = false;
+            } else {
+                if (syncToCloudBtn) syncToCloudBtn.disabled = true;
+                if (syncFromCloudBtn) syncFromCloudBtn.disabled = true;
+            }
+        }
+
+        // Handle Google sign in
+        async function handleGoogleSignIn() {
+            try {
+                // Check if Google Auth service is available
+                if (typeof googleAuthService === 'undefined') {
+                    showMessage('Google authentication service is not available. Please check your internet connection and refresh the page.', 'error');
+                    return;
+                }
+                
+                // Check if the service is initialized
+                if (!googleAuthService.isInitialized) {
+                    showMessage('Google authentication is still initializing. Please wait a moment and try again.', 'error');
+                    return;
+                }
+                
+                await googleAuthService.signIn();
+                updateAuthButtons();
+            } catch (error) {
+                console.error('Sign in failed:', error);
+                showMessage('Failed to sign in with Google. Please try again or check your internet connection.', 'error');
+            }
+        }
+
+        // Handle Google sign out
+        async function handleGoogleSignOut() {
+            try {
+                await googleAuthService.signOut();
+                updateAuthButtons();
+            } catch (error) {
+                console.error('Sign out failed:', error);
+            }
+        }
+
+        // Handle sync to cloud
+        async function handleSyncToCloud() {
+            try {
+                const btn = document.getElementById('syncToCloudBtn');
+                btn.disabled = true;
+                btn.textContent = 'Syncing...';
+                
+                await googleAuthService.syncToCloud();
+                showMessage('Data synced to cloud successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Sync to cloud failed:', error);
+                showMessage('Failed to sync data to cloud. Please try again.', 'error');
+            } finally {
+                const btn = document.getElementById('syncToCloudBtn');
+                btn.disabled = false;
+                btn.innerHTML = '<img src="images/settings-icon.svg" alt="Sync Up" class="button-icon-small"> Sync to Cloud';
+            }
+        }
+
+        // Handle sync from cloud
+        async function handleSyncFromCloud() {
+            try {
+                const btn = document.getElementById('syncFromCloudBtn');
+                const originalHTML = btn.innerHTML;
+                btn.disabled = true;
+                btn.textContent = 'Checking cloud backup...';
+                
+                const restored = await googleAuthService.syncFromCloud(true);
+                
+                // Reload settings after sync if data was restored
+                if (restored) {
+                    loadSettings();
+                    calculateStorageUsage();
+                }
+                
+            } catch (error) {
+                console.error('Sync from cloud failed:', error);
+                if (error.message.includes('User not signed in')) {
+                    showMessage('Please sign in with Google first.', 'error');
+                } else {
+                    showMessage('Failed to restore data from cloud. Please try again.', 'error');
+                }
+            } finally {
+                const btn = document.getElementById('syncFromCloudBtn');
+                btn.disabled = !googleAuthService || !googleAuthService.isSignedIn();
+                btn.innerHTML = '<img src="images/terms-icon.svg" alt="Sync Down" class="button-icon-small"> Restore from Cloud';
+            }
+        }
+
+        // Initialize theme settings
+        function initializeThemeSettings() {
+            if (typeof themeManager !== 'undefined') {
+                // Set current theme selection
+                const currentTheme = themeManager.getTheme();
+                const themeRadio = document.querySelector(`input[name="theme"][value="${currentTheme}"]`);
+                if (themeRadio) {
+                    themeRadio.checked = true;
+                }
+                
+                // Update theme display
+                updateThemeDisplay();
+                
+                // Add theme change listeners
+                document.querySelectorAll('input[name="theme"]').forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        if (this.checked) {
+                            themeManager.setTheme(this.value);
+                            showMessage(`Theme changed to ${this.value}!`, 'success');
+                        }
+                    });
+                });
+                
+                // Listen for theme changes from other sources
+                window.addEventListener('themeChanged', updateThemeDisplay);
+            }
+        }
+
+        // Update theme display info
+        function updateThemeDisplay() {
+            if (typeof themeManager !== 'undefined') {
+                const themeInfo = themeManager.getThemeInfo();
+                const displayElement = document.getElementById('currentThemeDisplay');
+                
+                if (displayElement && themeInfo) {
+                    const currentIcon = themeInfo.current ? themeInfo.current.icon : '💻';
+                    const currentLabel = themeInfo.current ? themeInfo.current.label : 'System';
+                    const actualIcon = themeInfo.actual ? themeInfo.actual.icon : '💻';
+                    const actualLabel = themeInfo.actual ? themeInfo.actual.label : 'System';
+                    
+                    if (themeInfo.isSystemControlled) {
+                        displayElement.innerHTML = `${currentIcon} ${currentLabel} (currently ${actualIcon} ${actualLabel})`;
+                    } else {
+                        displayElement.innerHTML = `${currentIcon} ${currentLabel}`;
+                    }
+                }
+            }
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('ecoSlugSettings') || '{}');
+            
+            // Set default reminder days
+            if (settings.reminderDays) {
+                document.getElementById('defaultReminderDays').value = settings.reminderDays;
+            }
+            
+            // Set auto location
+            if (settings.autoLocation !== undefined) {
+                document.getElementById('autoLocation').checked = settings.autoLocation;
+            }
+            
+            // Set temperature unit
+            if (settings.temperatureUnit) {
+                document.getElementById('temperatureUnit').value = settings.temperatureUnit;
+            }
+            
+            // Set save location
+            if (settings.saveLocation !== undefined) {
+                document.getElementById('saveLocation').checked = settings.saveLocation;
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            const settings = {
+                reminderDays: document.getElementById('defaultReminderDays').value,
+                autoLocation: document.getElementById('autoLocation').checked,
+                temperatureUnit: document.getElementById('temperatureUnit').value,
+                saveLocation: document.getElementById('saveLocation').checked
+            };
+            
+            localStorage.setItem('ecoSlugSettings', JSON.stringify(settings));
+            showMessage('Settings saved successfully!', 'success');
+            
+            // Auto-sync to cloud if user is signed in
+            if (typeof googleAuthService !== 'undefined' && googleAuthService.isSignedIn()) {
+                setTimeout(() => {
+                    googleAuthService.syncToCloud().catch(error => {
+                        console.error('Auto-sync failed:', error);
+                    });
+                }, 1000);
+            }
+        }
+
+        // Add event listeners to save settings when changed
+        document.getElementById('defaultReminderDays').addEventListener('change', saveSettings);
+        document.getElementById('autoLocation').addEventListener('change', saveSettings);
+        document.getElementById('temperatureUnit').addEventListener('change', saveSettings);
+        document.getElementById('saveLocation').addEventListener('change', saveSettings);
+
+        // Export all data
+        function exportAllData() {
+            const data = {
+                settings: JSON.parse(localStorage.getItem('ecoSlugSettings') || '{}'),
+                logData: JSON.parse(localStorage.getItem('pesticideLog') || '[]'),
+                pestCountData: JSON.parse(localStorage.getItem('pestCountData') || '{}'),
+                lastApplication: localStorage.getItem('lastPesticideApplication'),
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ecoslug-tracker-export-${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showMessage('Data exported successfully!', 'success');
+            
+            // Also sync to cloud if user is signed in
+            if (typeof googleAuthService !== 'undefined' && googleAuthService.isSignedIn()) {
+                handleSyncToCloud();
+            }
+        }
+
+        // Import data
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (confirm('This will replace all current data. Are you sure you want to continue?')) {
+                        if (data.settings) localStorage.setItem('ecoSlugSettings', JSON.stringify(data.settings));
+                        if (data.logData) localStorage.setItem('pesticideLog', JSON.stringify(data.logData));
+                        if (data.pestCountData) localStorage.setItem('pestCountData', JSON.stringify(data.pestCountData));
+                        if (data.lastApplication) localStorage.setItem('lastPesticideApplication', data.lastApplication);
+                        
+                        loadSettings();
+                        showMessage('Data imported successfully!', 'success');
+                        
+                        // Also sync to cloud if user is signed in
+                        if (typeof googleAuthService !== 'undefined' && googleAuthService.isSignedIn()) {
+                            handleSyncToCloud();
+                        }
+                    }
+                } catch (error) {
+                    showMessage('Error importing data. Please check the file format.', 'error');
+                }
+            };
+            reader.readAsText(file);
+            
+            // Clear the file input
+            event.target.value = '';
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear ALL data? This action cannot be undone.')) {
+                if (confirm('This will permanently delete all your application logs, pest counts, and settings. Continue?')) {
+                    localStorage.clear();
+                    showMessage('All data has been cleared.', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+            }
+        }
+
+        // Calculate storage usage
+        function calculateStorageUsage() {
+            let totalSize = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    totalSize += localStorage[key].length;
+                }
+            }
+            
+            // Convert to KB
+            const sizeInKB = (totalSize / 1024).toFixed(2);
+            document.getElementById('storageUsage').textContent = `${sizeInKB} KB`;
+        }
+
+        // Show message to user
+        function showMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = text;
+            
+            const container = document.querySelector('.settings-container');
+            container.insertBefore(messageDiv, container.firstChild);
+            
+            // Remove message after 3 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
+
+
+
