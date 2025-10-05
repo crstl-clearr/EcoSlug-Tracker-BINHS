@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5, user-scalable=yes">
+    <title>EcoSlug Tracker - Weather</title>
+    <script>
+        // Immediate theme initialization to prevent FOUC
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme') || 'system';
+                const root = document.documentElement;
+                
+                // Remove any existing theme attributes first
+                root.removeAttribute('data-theme');
+                
+                if (theme === 'light') {
+                    root.setAttribute('data-theme', 'light');
+                } else if (theme === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                } else if (theme === 'system') {
+                    // For system theme, check media query and set explicitly
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        root.setAttribute('data-theme', 'dark');
+                    } else {
+                        root.setAttribute('data-theme', 'light');
+                    }
+                }
+            } catch (e) {
+                // Fallback to light theme if localStorage fails
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Left Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="images/logo.svg" alt="EcoSlug Tracker Logo">
+            </div>
+            <div class="sidebar-title">EcoSlug Tracker</div>
+            <div class="sidebar-subtitle">Pest Management</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <a href="log.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/log-icon.svg" alt="Log" class="sidebar-icon">
+                <span class="sidebar-text">Application Log</span>
+            </a>
+
+            <a href="weather.html" class="sidebar-item active" onclick="setActiveNavItem(this)">
+                <img src="images/weather-icon.svg" alt="Weather" class="sidebar-icon">
+                <span class="sidebar-text">Weather Monitoring</span>
+            </a>
+
+            <a href="calculator.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Reduction Calculator</span>
+            </a>
+
+            <a href="pest-count.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Comparative Calculator</span>
+            </a>
+
+            <hr style="margin: 1rem 1.5rem; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+
+            <a href="settings.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/settings-icon.svg" alt="Settings" class="sidebar-icon">
+                <span class="sidebar-text">Settings</span>
+            </a>
+
+            <a href="terms.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/terms-icon.svg" alt="Terms" class="sidebar-icon">
+                <span class="sidebar-text">Terms & Conditions</span>
+            </a>
+
+            <a href="about.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/about-icon.svg" alt="About" class="sidebar-icon">
+                <span class="sidebar-text">About</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Back Button (moved outside header for proper positioning) -->
+    <button class="back-button" onclick="navigateHome()" title="Back to Home">
+        <img src="images/back-icon.svg" alt="Back" style="width: 20px; height: 20px;">
+    </button>
+
+    <!-- Main Content Area -->
+    <div class="main-layout" id="mainLayout">
+        <div class="container">
+            <header class="header">
+            <!-- Mobile Menu Button -->
+            <button class="menu-button" onclick="openSidebar()" title="Open Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <rect x="3" y="6" width="18" height="2" rx="1"></rect>
+                    <rect x="3" y="11" width="18" height="2" rx="1"></rect>
+                    <rect x="3" y="16" width="18" height="2" rx="1"></rect>
+                </svg>
+            </button>
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                    <img src="images/weather-icon.svg" alt="Weather" class="logo-icon" style="width: 60px; height: 60px;">
+                </div>
+            </div>
+            <h1 class="app-title">Weather Conditions</h1>
+            <p class="app-subtitle">Current conditions for pesticide application</p>
+        </header>
+
+        <main class="weather-container">
+            <!-- Loading State -->
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" style="display: none;">
+                Unable to load weather data. Please check your location settings and try again.
+            </div>
+
+            <!-- Weather Data -->
+            <div id="weatherData" style="display: none;">
+                <!-- Current Weather Card -->
+                <div class="weather-card">
+                    <div class="weather-header">
+                        <div class="location" id="location">Loading...</div>
+                        <div class="weather-info">
+                            <span class="weather-icon" id="weatherIcon">🌤️</span>
+                            <span class="temperature" id="temperature">--°C</span>
+                        </div>
+                        <div class="description" id="description">Loading weather data...</div>
+                    </div>
+                    
+                    <div class="weather-details">
+                        <div class="weather-detail">
+                            <div class="detail-label">Humidity</div>
+                            <div class="detail-value" id="humidity">--%</div>
+                        </div>
+                        <div class="weather-detail">
+                            <div class="detail-label">Wind Speed</div>
+                            <div class="detail-value" id="windSpeed">-- km/h</div>
+                        </div>
+                        <div class="weather-detail">
+                            <div class="detail-label">Pressure</div>
+                            <div class="detail-value" id="pressure">-- hPa</div>
+                        </div>
+                        <div class="weather-detail">
+                            <div class="detail-label">Updated</div>
+                            <div class="detail-value" id="lastUpdated">Just now</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advice Card -->
+                <div class="weather-card advice-card">
+                    <div class="advice-icon" id="adviceIcon">📋</div>
+                    <div class="advice-text" id="adviceText">
+                        Checking weather conditions for pesticide application...
+                    </div>
+                </div>
+
+                <!-- Countdown Card -->
+                <div class="weather-card countdown-card">
+                    <div class="countdown-label">Next Application Countdown</div>
+                    <div class="countdown-time" id="countdownTime">
+                        Calculating...
+                    </div>
+                </div>
+
+                    <!-- Data Actions -->
+                    <div class="data-actions">
+                        <h3 style="text-align: center; margin-bottom: 1rem; color: #333;">Data Actions</h3>
+                        <div class="button-group">
+                            <button class="nav-button record-button" onclick="recordApplication()">
+                                <img src="images/log-icon.svg" alt="Record Application" class="button-icon">
+                                <span class="button-text">Record Application</span>
+                            </button>
+                            <button class="nav-button refresh-button" onclick="refreshWeather()">
+                                <img src="images/weather-icon.svg" alt="Refresh Weather" class="button-icon">
+                                <span class="button-text">Refresh Weather</span>
+                            </button>
+                        </div>
+                    </div>
+
+                
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3 style="text-align: center; margin-bottom: 1.5rem; color: #333;">Quick Actions</h3>
+                    <div class="button-group">
+                        <button class="nav-button log-button" onclick="window.location.href='log.html'">
+                            <img src="images/log-icon.svg" alt="Log" class="button-icon">
+                            <span class="button-text">Log</span>
+                        </button>
+
+                        <button class="nav-button calculator-button" onclick="window.location.href='calculator.html'">
+                            <img src="images/calculator-icon.svg" alt="Calculator" class="button-icon">
+                            <span class="button-text">Pest Reduction Calculator</span>
+                        </button>
+
+                        <button class="nav-button pest-button" onclick="window.location.href='pest-count.html'">
+                            <img src="images/pest-icon.svg" alt="Pest Count" class="button-icon">
+                            <span class="button-text">Pest Comparative Calculator</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/menu.js"></script>
+    <script>
+        // Record pesticide application
+        function recordApplication() {
+            const now = new Date();
+            weatherService.setLastApplicationDate(now);
+            
+            // Show success message
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.textContent = `Application recorded at ${formatDate(now)}`;
+            
+            const weatherContainer = document.querySelector('.weather-container');
+            weatherContainer.insertBefore(successDiv, weatherContainer.firstChild);
+            
+            // Remove success message after 3 seconds
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+            
+            // Update countdown immediately
+            setTimeout(() => {
+                const countdown = weatherService.getNextApplicationCountdown();
+                document.getElementById('countdownTime').textContent = countdown.text;
+            }, 100);
+        }
+
+        // Refresh weather data
+        function refreshWeather() {
+            // Reload the page to refresh weather data
+            window.location.reload();
+        }
+
+        // Update last updated time
+        function updateLastUpdatedTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            document.getElementById('lastUpdated').textContent = timeString;
+        }
+
+        // Update the "last updated" time when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(updateLastUpdatedTime, 2000);
+        });
+    </script>
+
+</body>
+</html>

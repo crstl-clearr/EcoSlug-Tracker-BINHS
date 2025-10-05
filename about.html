@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5, user-scalable=yes">
+    <title>EcoSlug Tracker - About</title>
+    <script>
+        // Immediate theme initialization to prevent FOUC
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme') || 'system';
+                const root = document.documentElement;
+                
+                // Remove any existing theme attributes first
+                root.removeAttribute('data-theme');
+                
+                if (theme === 'light') {
+                    root.setAttribute('data-theme', 'light');
+                } else if (theme === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                } else if (theme === 'system') {
+                    // For system theme, check media query and set explicitly
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        root.setAttribute('data-theme', 'dark');
+                    } else {
+                        root.setAttribute('data-theme', 'light');
+                    }
+                }
+            } catch (e) {
+                // Fallback to light theme if localStorage fails
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Left Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="images/logo.svg" alt="EcoSlug Tracker Logo">
+            </div>
+            <div class="sidebar-title">EcoSlug Tracker</div>
+            <div class="sidebar-subtitle">Pest Management</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <a href="log.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/log-icon.svg" alt="Log" class="sidebar-icon">
+                <span class="sidebar-text">Application Log</span>
+            </a>
+
+            <a href="weather.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/weather-icon.svg" alt="Weather" class="sidebar-icon">
+                <span class="sidebar-text">Weather Monitoring</span>
+            </a>
+
+            <a href="calculator.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Reduction Calculator</span>
+            </a>
+
+            <a href="pest-count.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Comparative Calculator</span>
+            </a>
+
+            <hr style="margin: 1rem 1.5rem; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+
+            <a href="settings.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/settings-icon.svg" alt="Settings" class="sidebar-icon">
+                <span class="sidebar-text">Settings</span>
+            </a>
+
+            <a href="terms.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/terms-icon.svg" alt="Terms" class="sidebar-icon">
+                <span class="sidebar-text">Terms & Conditions</span>
+            </a>
+
+            <a href="about.html" class="sidebar-item active" onclick="setActiveNavItem(this)">
+                <img src="images/about-icon.svg" alt="About" class="sidebar-icon">
+                <span class="sidebar-text">About</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-layout" id="mainLayout">
+        <div class="container">
+            <header class="header">
+                <!-- Mobile Menu Button -->
+<button class="menu-button" onclick="openSidebar()" title="Open Menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <rect x="3" y="6" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="11" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="16" width="18" height="2" rx="1"></rect>
+    </svg>
+</button>
+
+            
+            <button class="back-button" onclick="navigateHome()" title="Back to Home">
+                <img src="images/back-icon.svg" alt="Back" style="width: 20px; height: 20px;">
+            </button>
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                    <img src="images/about-icon.svg" alt="About" class="logo-icon" style="width: 60px; height: 60px; filter: brightness(0) invert(1);">
+                </div>
+            </div>
+            <h1 class="app-title">About EcoSlug Tracker</h1>
+            <p class="app-subtitle">Professional Pesticide Application Management</p>
+        </header>
+
+        <main class="about-container">
+            <!-- App Information -->
+            <div class="about-section">
+                <div class="about-title">
+                    App Information
+                </div>
+                
+                <div class="about-content">
+                    <div class="info-item">
+                        <h3>Version</h3>
+                        <p>1.0.0</p>
+                    </div>
+                    
+                    <div class="info-item">
+                        <h3>Release Date</h3>
+                        <p>September 2025</p>
+                    </div>
+                    
+                    <div class="info-item">
+                        <h3>Platform</h3>
+                        <p>Progressive Web App (PWA)</p>
+                    </div>
+                    
+                    <div class="info-item">
+                        <h3>License</h3>
+                        <p>Open Source (MIT License)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Overview -->
+            <div class="about-section">
+                <div class="about-title">
+                    Key Features
+                </div>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="images/log-icon.svg" alt="Logging" class="feature-image">
+                        </div>
+                        <div class="feature-content">
+                            <h4>Application Logging</h4>
+                            <p>Track pesticide applications with detailed records including date, time, dosage, and treatment areas.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="images/weather-icon.svg" alt="Weather" class="feature-image">
+                        </div>
+                        <div class="feature-content">
+                            <h4>Weather Monitoring</h4>
+                            <p>Get real-time weather conditions and expert advice for optimal pesticide application timing.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="images/pest-icon.svg" alt="Pest Count" class="feature-image">
+                        </div>
+                        <div class="feature-content">
+                            <h4>Pest Count Tracking</h4>
+                            <p>Monitor pest populations before and after treatment to measure pesticide effectiveness.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="images/terms-icon.svg" alt="Data Export" class="feature-image">
+                        </div>
+                        <div class="feature-content">
+                            <h4>Data Export</h4>
+                            <p>Export your application logs and pest count data for record-keeping and compliance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purpose & Mission -->
+            <div class="about-section">
+                <div class="about-title">
+                    Our Mission
+                </div>
+                
+                <div class="mission-content">
+                    <p><strong>EcoSlug Tracker</strong> is designed to help agricultural professionals, gardeners, and pest control specialists maintain accurate records of pesticide applications while promoting sustainable and responsible pest management practices.</p>
+                    
+                    <div class="mission-points">
+                        <div class="mission-point">
+                            <span class="point-icon">🌱</span>
+                            <div>
+                                <h4>Environmental Responsibility</h4>
+                                <p>Promote sustainable agriculture by providing tools to optimize pesticide usage and reduce environmental impact.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-point">
+                            <span class="point-icon">📊</span>
+                            <div>
+                                <h4>Data-Driven Decisions</h4>
+                                <p>Enable users to make informed decisions based on weather conditions, pest counts, and application history.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-point">
+                            <span class="point-icon">🔒</span>
+                            <div>
+                                <h4>Privacy First</h4>
+                                <p>All data is stored locally on your device. We don't collect, share, or sell your information.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-point">
+                            <span class="point-icon">⚖️</span>
+                            <div>
+                                <h4>Regulatory Compliance</h4>
+                                <p>Help users maintain detailed records required for agricultural regulations and best practices.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Information -->
+            <div class="about-section">
+                <div class="about-title">
+                    Technical Details
+                </div>
+                
+                <div class="tech-info">
+                    <div class="tech-item">
+                        <h4>Technology Stack</h4>
+                        <ul>
+                            <li>HTML5, CSS3, JavaScript (Vanilla JS)</li>
+                            <li>Progressive Web App (PWA) compatible</li>
+                            <li>Local Storage for data persistence</li>
+                            <li>Responsive design for mobile and desktop</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <h4>Browser Compatibility</h4>
+                        <ul>
+                            <li>Chrome 60+</li>
+                            <li>Firefox 55+</li>
+                            <li>Safari 11+</li>
+                            <li>Edge 79+</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <h4>Data Storage</h4>
+                        <ul>
+                            <li>Local storage only - no cloud or server storage</li>
+                            <li>No user accounts or registration required</li>
+                            <li>Data export/import functionality available</li>
+                            <li>Automatic data backup recommended</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support & Contact -->
+            <div class="about-section">
+                <div class="about-title">
+                    Support & Development
+                </div>
+                
+                <div class="support-content">
+                    <div class="support-item">
+                        <h4>Open Source</h4>
+                        <p>EcoSlug Tracker is open source software. Contributions, bug reports, and feature requests are welcome.</p>
+                    </div>
+                    
+                    <div class="support-item">
+                        <h4>Future Updates</h4>
+                        <p>Planned features include:</p>
+                        <ul>
+                            <li>Advanced weather API integration</li>
+                            <li>Pesticide dosage calculator</li>
+                            <li>Multiple location support</li>
+                            <li>Detailed reporting and analytics</li>
+                            <li>Offline functionality improvements</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="support-item">
+                        <h4>Disclaimer</h4>
+                        <p>This app is provided as-is for record-keeping purposes. Users are responsible for following all applicable laws, regulations, and safety guidelines when applying pesticides.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+<div class="quick-actions">
+  <h3 style="text-align: center; margin-bottom: 1rem; color: #333;">Quick Actions</h3>
+  <div class="button-group">
+    <button class="nav-button log-button" onclick="window.location.href='log.html'">
+      <img src="images/log-icon.svg" alt="Log" class="button-icon">
+      <span class="button-text">Log</span>
+    </button>
+
+    <button class="nav-button weather-button" onclick="window.location.href='weather.html'">
+      <img src="images/weather-icon.svg" alt="Weather Monitoring" class="button-icon">
+      <span class="button-text">Weather Monitoring</span>
+    </button>
+    
+    <button class="nav-button calculator-button" onclick="window.location.href='calculator.html'">
+      <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="button-icon">
+      <span class="button-text">Pest Reduction Calculator</span>
+    </button>
+
+    <button class="nav-button pest-button" onclick="window.location.href='pest-count.html'">
+      <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="button-icon">
+      <span class="button-text">Pest Comparative Calculator</span>
+    </button>
+  </div>
+</div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/menu.js"></script>
+    <script>
+        // About page specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add any about page specific initialization here
+            console.log('About page loaded');
+        });
+    </script>
+
+</body>
+</html>

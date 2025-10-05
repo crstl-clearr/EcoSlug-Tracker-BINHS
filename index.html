@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5, user-scalable=yes">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com https://accounts.google.com https://ssl.gstatic.com; connect-src 'self' https://apis.google.com https://accounts.google.com https://www.googleapis.com; frame-src https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:">
+    <title>EcoSlug Tracker - Professional Pesticide Application Management</title>
+    <script>
+        // Immediate theme initialization to prevent FOUC
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme') || 'system';
+                const root = document.documentElement;
+
+                // Remove any existing theme attributes first
+                root.removeAttribute('data-theme');
+
+                if (theme === 'light') {
+                    root.setAttribute('data-theme', 'light');
+                } else if (theme === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                } else if (theme === 'system') {
+                    // For system theme, check media query and set explicitly
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        root.setAttribute('data-theme', 'dark');
+                    } else {
+                        root.setAttribute('data-theme', 'light');
+                    }
+                }
+            } catch (e) {
+                // Fallback to light theme if localStorage fails
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    
+    <!-- Left Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="images/logo.svg" alt="EcoSlug Tracker Logo">
+            </div>
+            <div class="sidebar-title">EcoSlug Tracker</div>
+            <div class="sidebar-subtitle">Pest Management</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <a href="log.html" class="sidebar-item active" onclick="setActiveNavItem(this)">
+                <img src="images/log-icon.svg" alt="Log" class="sidebar-icon">
+                <span class="sidebar-text">Application Log</span>
+            </a>
+
+            <a href="weather.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/weather-icon.svg" alt="Weather" class="sidebar-icon">
+                <span class="sidebar-text">Weather Monitoring</span>
+            </a>
+
+            <a href="calculator.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Reduction Calculator</span>
+            </a>
+
+            <a href="pest-count.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Comparative Calculator</span>
+            </a>
+
+            <hr style="margin: 1rem 1.5rem; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+
+            <a href="settings.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/settings-icon.svg" alt="Settings" class="sidebar-icon">
+                <span class="sidebar-text">Settings</span>
+            </a>
+
+            <a href="terms.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/terms-icon.svg" alt="Terms" class="sidebar-icon">
+                <span class="sidebar-text">Terms & Conditions</span>
+            </a>
+
+            <a href="about.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/about-icon.svg" alt="About" class="sidebar-icon">
+                <span class="sidebar-text">About</span>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Main Content Area -->
+    <div class="main-layout" id="mainLayout">
+        <div class="container">
+            <header class="header">
+                <!-- Mobile Menu Button -->
+<button class="menu-button" onclick="openSidebar()" title="Open Menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <rect x="3" y="6" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="11" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="16" width="18" height="2" rx="1"></rect>
+    </svg>
+</button>
+
+                <div class="logo-container">
+                    <!-- Logo -->
+                    <div class="logo-placeholder">
+                        <img src="images/logo.svg" alt="EcoSlug Tracker Logo" class="logo-icon">
+                    </div>
+                </div>
+                <h1 class="app-title">EcoSlug Tracker</h1>
+                <p class="app-subtitle">Bulihan Integrated National High School</p>
+            </header>
+    
+            <main class="main-content">
+                <div class="button-group">
+                    <button class="nav-button log-button" onclick="navigateToLog()">
+                        <img src="images/log-icon.svg" alt="Log" class="button-icon">
+                        <span class="button-text">Application Log</span>
+                    </button>
+
+                    <button class="nav-button weather-button" onclick="navigateToWeather()">
+                        <img src="images/weather-icon.svg" alt="Weather" class="button-icon">
+                        <span class="button-text">Weather Monitoring</span>
+                    </button>
+
+                    <button class="nav-button pest-button" onclick="navigateToCalculator()">
+                        <img src="images/calculator-icon.svg" alt="Calculator" class="button-icon">
+                        <span class="button-text">Pest Reduction Calculator</span>
+                    </button>
+
+                    <button class="nav-button pest-button" onclick="navigateToPestCount()">
+                        <img src="images/pest-icon.svg" alt="Pest Count" class="button-icon">
+                        <span class="button-text">Pest Comparative Calculator</span>
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyDKAd1_ae57DuLkunsWWwDO6gv_jBhPhFs",
+    authDomain: "ecoslug-tracker-3d01a.firebaseapp.com",
+    projectId: "ecoslug-tracker-3d01a",
+    storageBucket: "ecoslug-tracker-3d01a.firebasestorage.app",
+    messagingSenderId: "333862002151",
+    appId: "1:333862002151:web:b9569a9369a24b9f837142",
+    measurementId: "G-GH5VQHNGR3"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
+    <script src="js/theme.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+
+    <!-- Login Warning Modal -->
+    <div id="loginWarningModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Login Required</h3>
+            </div>
+            <div class="modal-body">
+                <p style="color: black;">You are not logged in to Google and might lose the data if you stayed logged out.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-save" onclick="goToLogin()">Go to log in page</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div id="loginWarningOverlay" class="modal-overlay" style="display: none;" onclick="closeLoginWarning()"></div>
+
+    <script>
+        // Check authentication status and show warning if not logged in
+        function checkAuthAndShowWarning() {
+            // Wait a bit for auth to initialize
+            setTimeout(() => {
+                // Check if user is signed in (from auth.js)
+                if (!window.user) {
+                    showLoginWarning();
+                }
+            }, 2000); // 2 second delay to allow auth to load
+        }
+
+        function showLoginWarning() {
+            const modal = document.getElementById('loginWarningModal');
+            const overlay = document.getElementById('loginWarningOverlay');
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLoginWarning() {
+            const modal = document.getElementById('loginWarningModal');
+            const overlay = document.getElementById('loginWarningOverlay');
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function goToLogin() {
+            window.location.href = 'settings.html';
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', checkAuthAndShowWarning);
+    </script>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5, user-scalable=yes">
+    <title>EcoSlug Tracker - Calculator</title>
+    <script>
+        // Immediate theme initialization to prevent FOUC
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme') || 'system';
+                const root = document.documentElement;
+                
+                // Remove any existing theme attributes first
+                root.removeAttribute('data-theme');
+                
+                if (theme === 'light') {
+                    root.setAttribute('data-theme', 'light');
+                } else if (theme === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                } else if (theme === 'system') {
+                    // For system theme, check media query and set explicitly
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        root.setAttribute('data-theme', 'dark');
+                    } else {
+                        root.setAttribute('data-theme', 'light');
+                    }
+                }
+            } catch (e) {
+                // Fallback to light theme if localStorage fails
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Left Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="images/logo.svg" alt="EcoSlug Tracker Logo">
+            </div>
+            <div class="sidebar-title">EcoSlug Tracker</div>
+            <div class="sidebar-subtitle">Pest Management</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <a href="log.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/log-icon.svg" alt="Log" class="sidebar-icon">
+                <span class="sidebar-text">Application Log</span>
+            </a>
+
+            <a href="weather.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/weather-icon.svg" alt="Weather" class="sidebar-icon">
+                <span class="sidebar-text">Weather Monitoring</span>
+            </a>
+
+            <a href="calculator.html" class="sidebar-item active" onclick="setActiveNavItem(this)">
+                <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Reduction Calculator</span>
+            </a>
+
+            <a href="pest-count.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Comparative Calculator</span>
+            </a>
+
+            <hr style="margin: 1rem 1.5rem; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+
+            <a href="settings.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/settings-icon.svg" alt="Settings" class="sidebar-icon">
+                <span class="sidebar-text">Settings</span>
+            </a>
+
+            <a href="terms.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/terms-icon.svg" alt="Terms" class="sidebar-icon">
+                <span class="sidebar-text">Terms & Conditions</span>
+            </a>
+
+            <a href="about.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/about-icon.svg" alt="About" class="sidebar-icon">
+                <span class="sidebar-text">About</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Back Button (moved outside header for proper positioning) -->
+    <button class="back-button" onclick="navigateHome()" title="Back to Home">
+        <img src="images/back-icon.svg" alt="Back" style="width: 20px; height: 20px;">
+    </button>
+
+    <!-- Main Content Area -->
+    <div class="main-layout" id="mainLayout">
+        <div class="container">
+            <header class="header">
+                <!-- Mobile Menu Button -->
+                <button class="menu-button" onclick="openSidebar()" title="Open Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <rect x="3" y="6" width="18" height="2" rx="1"></rect>
+                        <rect x="3" y="11" width="18" height="2" rx="1"></rect>
+                        <rect x="3" y="16" width="18" height="2" rx="1"></rect>
+                    </svg>
+                </button>
+
+                <!-- Centered Content Container -->
+                <div class="header-content">
+                    <div class="logo-container">
+                        <div class="logo-placeholder">
+                            <img src="images/calculator-icon.svg" alt="Calculator" class="logo-icon" style="width: 60px; height: 60px;">
+                        </div>
+                    </div>
+                    <h1 class="app-title">Pesticide Reduction Calculator</h1>
+                    <p class="app-subtitle">Pesticide application calculations</p>
+                </div>
+            </header>
+
+        <main class="calculator-main">
+
+            <!-- Pest Reduction Calculator -->
+                <div class="category-section">
+                    <div class="category-title" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
+                        <img src="images/effectiveness-icon.svg" alt="Pest Reduction" class="calc-icon"> Pest Reduction Calculator
+                    </div>
+                    <p style="text-align: center; margin-bottom: 1.5rem; color: var(--text-secondary);">Calculate pest reduction effectiveness and track treatment outcomes</p>
+                    
+                    <div class="calc-form">
+                        <div class="input-group">
+                            <label for="pestsBefore">Initial Pest Count</label>
+                            <input type="number" id="pestsBefore" placeholder="Enter initial pest count" min="0" step="1">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="pestsAfter">Final Pest Count</label>
+                            <input type="number" id="pestsAfter" placeholder="Enter final pest count" min="0" step="1">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="daysElapsed">Days Between Counts</label>
+                            <input type="number" id="daysElapsed" placeholder="Enter number of days" min="1" step="1">
+                        </div>
+                    
+                    <button class="calc-button" onclick="calculatePestReduction()">Calculate Pest Reduction</button>
+                    
+                    <div id="pestReductionResults" class="calc-results"></div>
+                    
+                    <div class="effectiveness-actions">
+                        <button class="secondary-button" onclick="savePestReductionData()">Save Results to Log</button>
+                        <button class="secondary-button" onclick="comparePestReduction()">Compare with Previous</button>
+                    </div>
+                    </div>
+                </div>
+            
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+               <h3 style="text-align: center; margin-bottom: 1rem; color: #333;">Quick Actions</h3>
+                <div class="button-group">
+                    <button class="nav-button log-button" onclick="navigateToLog()">
+                        <img src="images/log-icon.svg" alt="Log" class="button-icon">
+                        <span class="button-text">Log</span>
+                    </button>
+                    <button class="nav-button weather-button" onclick="navigateToWeather()">
+                        <img src="images/weather-icon.svg" alt="Weather" class="button-icon">
+                        <span class="button-text">Check Weather</span>
+                    </button>
+
+                    <button class="nav-button pest-button" onclick="navigateToPestCount()">
+                        <img src="images/pest-icon.svg" alt="Pest Count" class="button-icon">
+                        <span class="button-text">Pest Comparative Calculator</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/menu.js"></script>
+    <script>
+        // Calculator JavaScript Functionality
+        
+        // Unit conversion factors
+        const conversionFactors = {
+            // Area conversions
+            area: {
+                sqm: 1,
+                sqft: 0.092903,
+                hectare: 10000,
+                acre: 4046.86
+            },
+            // Weight conversions to grams
+            weight: {
+                g: 1,
+                kg: 1000,
+                lb: 453.592,
+                oz: 28.3495
+            },
+            // Volume conversions to milliliters
+            volume: {
+                ml: 1,
+                l: 1000
+            },
+            // Application rate conversions
+            appRate: {
+                'g_per_sqm': { weight: 1, area: 1 },
+                'kg_per_hectare': { weight: 1000, area: 10000 },
+                'lb_per_acre': { weight: 453.592, area: 4046.86 },
+                'oz_per_sqft': { weight: 28.3495, area: 0.092903 }
+            }
+        };
+        
+        // Navigation between calculators (simplified for single calculator)
+        function showCalculator(type) {
+            // Single calculator is always active
+            document.getElementById('pestReductionCalculator').classList.add('active');
+        }
+        
+        // Utility functions
+        function formatNumber(num, decimals = 2) {
+            return parseFloat(num).toFixed(decimals);
+        }
+        
+        function showResults(containerId, results) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = results;
+            container.classList.add('show');
+        }
+        
+        // Pest Reduction Calculator
+        function calculatePestReduction() {
+            try {
+                const pestsBefore = parseInt(document.getElementById('pestsBefore').value);
+                const pestsAfter = parseInt(document.getElementById('pestsAfter').value);
+                const daysElapsed = parseInt(document.getElementById('daysElapsed').value);
+                
+                if (isNaN(pestsBefore) || isNaN(pestsAfter) || isNaN(daysElapsed)) {
+                    alert('Please enter valid numbers for all required fields');
+                    return;
+                }
+                
+                if (pestsBefore < 0 || pestsAfter < 0 || daysElapsed <= 0) {
+                    alert('Please enter positive numbers for pest counts and days');
+                    return;
+                }
+                
+                // Calculate effectiveness metrics
+                const pestsReduced = pestsBefore - pestsAfter;
+               const effectivenessPercent = (pestsBefore > 0 && daysElapsed > 0)
+    ? ((pestsReduced / pestsBefore) * 100) / daysElapsed
+    : 0;
+;
+                const reductionRate = pestsReduced / daysElapsed; // Average pests eliminated per day
+                
+                // Determine effectiveness rating
+                let rating = 'Poor';
+                let ratingColor = '#FF6B6B';
+                if (effectivenessPercent >= 90) {
+                    rating = 'Excellent';
+                    ratingColor = '#4CAF50';
+                } else if (effectivenessPercent >= 75) {
+                    rating = 'Good';
+                    ratingColor = '#8BC34A';
+                } else if (effectivenessPercent >= 50) {
+                    rating = 'Fair';
+                    ratingColor = '#FF9500';
+                }
+                
+                const results = `
+                    <h3><img src="images/results-icon.svg" alt="Results" style="width: 20px; height: 20px; margin-right: 8px; vertical-align: middle; filter: var(--icon-filter);"> Pest Reduction Analysis</h3>
+                    <div class="result-item">
+                        <span class="result-label">Initial Count:</span>
+                        <span class="result-value" style="color: var(--text-primary);">${pestsBefore}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Final Count:</span>
+                        <span class="result-value" style="color: var(--text-primary);">${pestsAfter}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Days Elapsed:</span>
+                        <span class="result-value" style="color: var(--text-primary);">${daysElapsed} days</span>
+                    </div>
+                    <div class="result-item result-highlight">
+                        <span class="result-label">Pests Reduced:</span>
+                        <span class="result-value">${pestsReduced}</span>
+                    </div>
+                    <div class="result-item result-highlight">
+                        <span class="result-label">Effectiveness:</span>
+                        <span class="result-value" style="color: ${ratingColor}">${formatNumber(effectivenessPercent)}% (${rating})</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Daily Reduction Rate:</span>
+                        <span class="result-value">${formatNumber(reductionRate, 1)} pests/day</span>
+                    </div>
+                `;
+                
+                showResults('pestReductionResults', results);
+                
+                // Store results for saving
+                window.currentPestReductionData = {
+                    date: new Date().toISOString().split('T')[0],
+                    pestsBefore: pestsBefore,
+                    pestsAfter: pestsAfter,
+                    daysElapsed: daysElapsed,
+                    effectiveness: effectivenessPercent,
+                    rating: rating
+                };
+                
+            } catch (error) {
+                console.error('Pest reduction calculation error:', error);
+                alert('Error calculating pest reduction. Please check your inputs.');
+            }
+        }
+        
+        // Save pest reduction data to local storage
+        function savePestReductionData() {
+            if (!window.currentPestReductionData) {
+                alert('Please calculate pest reduction first');
+                return;
+            }
+            
+            try {
+                // Get existing pest reduction data
+                const existingData = JSON.parse(localStorage.getItem('pestReductionData') || '[]');
+                
+                // Add new data
+                existingData.push({
+                    ...window.currentPestReductionData,
+                    id: Date.now(),
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('pestReductionData', JSON.stringify(existingData));
+                
+                alert('Pest reduction data saved successfully!');
+                
+            } catch (error) {
+                console.error('Error saving pest reduction data:', error);
+                alert('Error saving data. Please try again.');
+            }
+        }
+        
+        // Compare with previous pest reduction data
+        function comparePestReduction() {
+            if (!window.currentPestReductionData) {
+                alert('Please calculate pest reduction first');
+                return;
+            }
+            
+            try {
+                const existingData = JSON.parse(localStorage.getItem('pestReductionData') || '[]');
+                
+                if (existingData.length === 0) {
+                    alert('No previous pest reduction data found to compare with.');
+                    return;
+                }
+                
+                // Use all previous treatments for comparison
+                const allTreatments = existingData;
+                
+                if (allTreatments.length === 0) {
+                    alert('No previous treatment data found.');
+                    return;
+                }
+                
+                // Calculate averages
+                const avgEffectiveness = allTreatments.reduce((sum, data) => sum + data.effectiveness, 0) / allTreatments.length;
+                const bestEffectiveness = Math.max(...allTreatments.map(data => data.effectiveness));
+                const worstEffectiveness = Math.min(...allTreatments.map(data => data.effectiveness));
+                
+                const current = window.currentPestReductionData.effectiveness;
+                const comparison = current > avgEffectiveness ? 'above' : 'below';
+                const comparisonColor = current > avgEffectiveness ? '#4CAF50' : '#FF9500';
+                
+                const comparisonResults = `
+                    <h3><img src="images/results-icon.svg" alt="Results" style="width: 20px; height: 20px; margin-right: 8px; vertical-align: middle; filter: var(--icon-filter);"> Performance Comparison</h3>
+                    <div class="result-item">
+                        <span class="result-label">Current Effectiveness:</span>
+                        <span class="result-value">${formatNumber(current)}%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Average (${allTreatments.length} treatments):</span>
+                        <span class="result-value">${formatNumber(avgEffectiveness)}%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Best Previous:</span>
+                        <span class="result-value">${formatNumber(bestEffectiveness)}%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Worst Previous:</span>
+                        <span class="result-value">${formatNumber(worstEffectiveness)}%</span>
+                    </div>
+                    <div class="result-item result-highlight">
+                        <span class="result-label">Performance:</span>
+                        <span class="result-value" style="color: ${comparisonColor}">
+                            ${formatNumber(Math.abs(current - avgEffectiveness))}% ${comparison} average
+                        </span>
+                    </div>
+                `;
+                
+                // Show comparison in the results area
+                showResults('pestReductionResults', comparisonResults);
+                
+            } catch (error) {
+                console.error('Error comparing pest reduction:', error);
+                alert('Error comparing data. Please try again.');
+            }
+        }
+        
+        // Initialize calculator on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show pest reduction calculator by default
+            showCalculator('pestReduction');
+        });
+        
+    </script>
+
+</body>
+</html>

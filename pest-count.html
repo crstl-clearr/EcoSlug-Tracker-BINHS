@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5, user-scalable=yes">
+    <title>EcoSlug Tracker - Pest Count</title>
+    <script>
+        // Immediate theme initialization to prevent FOUC
+        (function() {
+            try {
+                const theme = localStorage.getItem('theme') || 'system';
+                const root = document.documentElement;
+                
+                // Remove any existing theme attributes first
+                root.removeAttribute('data-theme');
+                
+                if (theme === 'light') {
+                    root.setAttribute('data-theme', 'light');
+                } else if (theme === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                } else if (theme === 'system') {
+                    // For system theme, check media query and set explicitly
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        root.setAttribute('data-theme', 'dark');
+                    } else {
+                        root.setAttribute('data-theme', 'light');
+                    }
+                }
+            } catch (e) {
+                // Fallback to light theme if localStorage fails
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Left Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="images/logo.svg" alt="EcoSlug Tracker Logo">
+            </div>
+            <div class="sidebar-title">EcoSlug Tracker</div>
+            <div class="sidebar-subtitle">Pest Management</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <a href="log.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/log-icon.svg" alt="Log" class="sidebar-icon">
+                <span class="sidebar-text">Application Log</span>
+            </a>
+
+            <a href="weather.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/weather-icon.svg" alt="Weather" class="sidebar-icon">
+                <span class="sidebar-text">Weather Monitoring</span>
+            </a>
+
+            <a href="calculator.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/calculator-icon.svg" alt="Pest Reduction Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Reduction Calculator</span>
+            </a>
+
+            <a href="pest-count.html" class="sidebar-item active" onclick="setActiveNavItem(this)">
+                <img src="images/pest-icon.svg" alt="Pest Comparative Calculator" class="sidebar-icon">
+                <span class="sidebar-text">Pest Comparative Calculator</span>
+            </a>
+
+            <hr style="margin: 1rem 1.5rem; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+
+            <a href="settings.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/settings-icon.svg" alt="Settings" class="sidebar-icon">
+                <span class="sidebar-text">Settings</span>
+            </a>
+
+            <a href="terms.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/terms-icon.svg" alt="Terms" class="sidebar-icon">
+                <span class="sidebar-text">Terms & Conditions</span>
+            </a>
+
+            <a href="about.html" class="sidebar-item" onclick="setActiveNavItem(this)">
+                <img src="images/about-icon.svg" alt="About" class="sidebar-icon">
+                <span class="sidebar-text">About</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-layout" id="mainLayout">
+        <div class="container">
+            <header class="header">
+            <!-- Mobile Menu Button -->
+<button class="menu-button" onclick="openSidebar()" title="Open Menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <rect x="3" y="6" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="11" width="18" height="2" rx="1"></rect>
+        <rect x="3" y="16" width="18" height="2" rx="1"></rect>
+    </svg>
+</button>
+
+            <button class="back-button" onclick="navigateHome()" title="Back to Home">
+                <img src="images/back-icon.svg" alt="Back" style="width: 20px; height: 20px;">
+            </button>
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                    <img src="images/pest-icon.svg" alt="Pest Count" class="logo-icon" style="width: 60px; height: 60px;">
+                </div>
+            </div>
+            <h1 class="app-title">Pest Comparative Calculator</h1>
+            <p class="app-subtitle">Monitor pesticide effectiveness</p>
+        </header>
+
+        <main class="pest-count-container">
+            <!-- Treated Category -->
+            <div class="category-section">
+                <div class="category-title treated-title">
+                    Treated Area
+                </div>
+                
+                <div class="dropdown-group">
+                    <div class="dropdown-item">
+                        <label class="dropdown-label" for="treatedBefore">
+                            Initial Pest Count
+                        </label>
+                        <select 
+                            class="dropdown-select" 
+                            id="treatedBefore" 
+                            data-category="treated" 
+                            data-timing="before"
+                        >
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="dropdown-item">
+                        <label class="dropdown-label" for="treatedAfter">
+                            Final Pest Count
+                        </label>
+                        <select 
+                            class="dropdown-select" 
+                            id="treatedAfter" 
+                            data-category="treated" 
+                            data-timing="after"
+                        >
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Category -->
+            <div class="category-section">
+                <div class="category-title control-title">
+                    Control Area (Untreated)
+                </div>
+                
+                <div class="dropdown-group">
+                    <div class="dropdown-item">
+                        <label class="dropdown-label" for="controlBefore">
+                            Initial Pest Count
+                        </label>
+                        <select 
+                            class="dropdown-select" 
+                            id="controlBefore" 
+                            data-category="control" 
+                            data-timing="before"
+                        >
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="dropdown-item">
+                        <label class="dropdown-label" for="controlAfter">
+                            Final Pest Count
+                        </label>
+                        <select 
+                            class="dropdown-select" 
+                            id="controlAfter" 
+                            data-category="control" 
+                            data-timing="after"
+                        >
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Effectiveness Summary -->
+            <div class="category-section" id="effectivenessSection" style="display: none;">
+                <div class="category-title" style="background: linear-gradient(135deg, #9C27B0 0%, #8E24AA 100%);">
+                    Effectiveness Summary
+                </div>
+                
+                <div class="effectiveness-content" id="effectivenessContent">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Data Actions -->
+<div class="quick-actions">
+    <h3 style="text-align: center; margin-bottom: 1rem; color: #333;">Data Actions</h3>
+    <div style= "max-width: 1000px; margin: 1rem auto;">   </style>
+    <div class="button-group">
+        <button class="nav-button clear-button" onclick="resetData()">
+            <span class="button-text">Clear Data</span>
+        </button>
+    </div>
+</div>
+
+</div>
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+               <h3 style="text-align: center; margin-bottom: 1rem; color: #333;">Quick Actions</h3>
+                <div class="button-group">
+                    <button class="nav-button log-button" onclick="navigateToLog()">
+                        <img src="images/log-icon.svg" alt="Log" class="button-icon">
+                        <span class="button-text">Log</span>
+                    </button>
+
+                    <button class="nav-button weather-button" onclick="navigateToWeather()">
+                        <img src="images/weather-icon.svg" alt="Weather" class="button-icon">
+                        <span class="button-text">Check Weather</span>
+                    </button>
+                    
+                    <button class="nav-button pest-button" onclick="navigateToCalculator()">
+                        <img src="images/calculator-icon.svg" alt="Calculator" class="button-icon">
+                        <span class="button-text">Pest Reduction Calculator</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+        </div>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/menu.js"></script>
+    <script>
+        // Export data as text
+        function exportData() {
+            const data = pestCountManager.data;
+            const effectiveness = pestCountManager.getEffectivenessCalculation();
+            const timestamp = new Date().toLocaleString();
+            
+            let exportText = `EcoSlug Tracker - Pest Count Data Export\n`;
+            exportText += `Export Date: ${timestamp}\n\n`;
+            
+            exportText += `TREATED AREA:\n`;
+            exportText += `- Before Treatment: ${data.treated.before !== null ? data.treated.before : 'Not recorded'}\n`;
+            exportText += `- After Treatment: ${data.treated.after !== null ? data.treated.after : 'Not recorded'}\n\n`;
+            
+            exportText += `CONTROL AREA (Untreated):\n`;
+            exportText += `- Before Period: ${data.control.before !== null ? data.control.before : 'Not recorded'}\n`;
+            exportText += `- After Period: ${data.control.after !== null ? data.control.after : 'Not recorded'}\n\n`;
+            
+            if (effectiveness) {
+                exportText += `EFFECTIVENESS ANALYSIS:\n`;
+                exportText += `- Treated Area Reduction: ${effectiveness.treatedReduction}%\n`;
+                exportText += `- Control Area Change: ${effectiveness.controlReduction}%\n`;
+                exportText += `- Treatment Effectiveness: ${effectiveness.effectiveness}%\n\n`;
+            }
+            
+            // Create downloadable file
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pest-count-data-${new Date().toISOString().slice(0, 10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show success message
+            showMessage('Data exported successfully!', 'success');
+        }
+
+        // Reset all data
+        function resetData() {
+            if (confirm('Are you sure you want to reset all pest count data? This action cannot be undone.')) {
+                localStorage.removeItem('pestCountData');
+                
+                // Reset dropdowns
+                const dropdowns = document.querySelectorAll('.dropdown-select');
+                dropdowns.forEach(dropdown => {
+                    dropdown.value = '';
+                });
+                
+                // Hide effectiveness section
+                document.getElementById('effectivenessSection').style.display = 'none';
+                
+                // Reinitialize
+                pestCountManager.data = pestCountManager.loadData();
+                
+                showMessage('All data has been reset.', 'success');
+            }
+        }
+
+        // Show message to user
+        function showMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = text;
+            
+            const container = document.querySelector('.pest-count-container');
+            container.insertBefore(messageDiv, container.firstChild);
+            
+            // Remove message after 3 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 3000);
+        }
+
+        // Update effectiveness display
+        function updateEffectivenessDisplay() {
+            const effectiveness = pestCountManager.getEffectivenessCalculation();
+            const section = document.getElementById('effectivenessSection');
+            const content = document.getElementById('effectivenessContent');
+            
+            if (effectiveness) {
+                section.style.display = 'block';
+                
+                let effectivenessText = '';
+                if (parseFloat(effectiveness.effectiveness) > 0) {
+                    effectivenessText = 'Positive - Treatment is effective';
+                } else if (parseFloat(effectiveness.effectiveness) < 0) {
+                    effectivenessText = 'Negative - Treatment may not be effective';
+                } else {
+                    effectivenessText = 'Neutral - No clear effectiveness difference';
+                }
+                
+                content.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.3rem;">Treated Reduction</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #4CAF50;">${effectiveness.treatedReduction}%</div>
+                        </div>
+                        <div style="background: #ffebee; padding: 1rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.3rem;">Control Change</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #FF6B6B;">${effectiveness.controlReduction}%</div>
+                        </div>
+                    </div>
+                    <div style="background: #f3e5f5; padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.3rem;">Treatment Effectiveness</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #9C27B0; margin-bottom: 0.5rem;">${effectiveness.effectiveness}%</div>
+                        <div style="font-size: 0.9rem; color: #666;">${effectivenessText}</div>
+                    </div>
+                `;
+            } else {
+                section.style.display = 'none';
+            }
+        }
+
+        // Pest Reduction Calculator Functions
+        function formatNumber(num, decimals = 2) {
+            return parseFloat(num).toFixed(decimals);
+        }
+        
+        function showResults(containerId, results) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = results;
+            container.classList.add('show');
+        }
+        
+        // Pest Reduction Calculator
+        function calculatePestReduction() {
+            try {
+                const pestsBefore = parseInt(document.getElementById('pestsBefore').value);
+                const pestsAfter = parseInt(document.getElementById('pestsAfter').value);
+                const daysElapsed = parseInt(document.getElementById('daysElapsed').value);
+                
+                if (isNaN(pestsBefore) || isNaN(pestsAfter) || isNaN(daysElapsed)) {
+                    alert('Please enter valid numbers for all required fields');
+                    return;
+                }
+                
+                if (pestsBefore < 0 || pestsAfter < 0 || daysElapsed <= 0) {
+                    alert('Please enter positive numbers for pest counts and days');
+                    return;
+                }
+                
+                // Calculate effectiveness metrics
+                const pestsReduced = pestsBefore - pestsAfter;
+                const effectivenessPercent = pestsBefore > 0 ? (pestsReduced / pestsBefore) * 100 : 0;
+                const reductionRate = pestsReduced / daysElapsed; // Average pests eliminated per day
+                
+                // Determine effectiveness rating
+                let rating = 'Poor';
+                let ratingColor = '#FF6B6B';
+                if (effectivenessPercent >= 90) {
+                    rating = 'Excellent';
+                    ratingColor = '#4CAF50';
+                } else if (effectivenessPercent >= 75) {
+                    rating = 'Good';
+                    ratingColor = '#8BC34A';
+                } else if (effectivenessPercent >= 50) {
+                    rating = 'Fair';
+                    ratingColor = '#FF9500';
+                }
+                
+                const results = `
+                    <h3><img src="images/results-icon.svg" alt="Results" style="width: 20px; height: 20px; margin-right: 8px; vertical-align: middle; filter: var(--icon-filter);"> Pest Reduction Analysis</h3>
+                    <div class="result-item">
+                        <span class="result-label">Initial Count:</span>
+                        <span class="result-value" style="color: #000000;">${pestsBefore}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Final Count:</span>
+                        <span class="result-value" style="color: #000000;">${pestsAfter}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Days Elapsed:</span>
+                        <span class="result-value" style="color: #000000;">${daysElapsed} days</span>
+                    </div>
+                    <div class="result-item result-highlight">
+                        <span class="result-label">Pests Reduced:</span>
+                        <span class="result-value">${pestsReduced}</span>
+                    </div>
+                    <div class="result-item result-highlight">
+                        <span class="result-label">Effectiveness:</span>
+                        <span class="result-value" style="color: ${ratingColor}">${formatNumber(effectivenessPercent)}% (${rating})</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Daily Reduction Rate:</span>
+                        <span class="result-value">${formatNumber(reductionRate, 1)} pests/day</span>
+                    </div>
+                `;
+                
+                showResults('pestReductionResults', results);
+                
+                // Store results for saving
+                window.currentPestReductionData = {
+                    date: new Date().toISOString().split('T')[0],
+                    pestsBefore: pestsBefore,
+                    pestsAfter: pestsAfter,
+                    daysElapsed: daysElapsed,
+                    effectiveness: effectivenessPercent,
+                    rating: rating
+                };
+                
+            } catch (error) {
+                console.error('Pest reduction calculation error:', error);
+                alert('Error calculating pest reduction. Please check your inputs.');
+            }
+        }
+        
+        // Save pest reduction data to local storage
+        function savePestReductionData() {
+            if (!window.currentPestReductionData) {
+                alert('Please calculate pest reduction first');
+                return;
+            }
+            
+            try {
+                // Get existing pest reduction data
+                const existingData = JSON.parse(localStorage.getItem('pestReductionData') || '[]');
+                
+                // Add new data
+                existingData.push({
+                    ...window.currentPestReductionData,
+                    id: Date.now(),
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('pestReductionData', JSON.stringify(existingData));
+                
+                showMessage('Pest reduction data saved successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error saving pest reduction data:', error);
+                showMessage('Error saving data. Please try again.', 'error');
+            }
+        }
+        
+        // Compare with previous pest reduction data
+        function comparePestReduction() {
+            if (!window.currentPestReductionData) {
+                alert('Please calculate pest reduction first');
+                return;
+            }
+            
+            try {
+                const existingData = JSON.parse(localStorage.getItem('pestReductionData') || '[]');
+                
+                if (existingData.length === 0) {
+                    alert('No previous pest reduction data found to compare with.');
+                    return;
+                }
+                
+                // Use all previous treatments for comparison
+                const allTreatments = existingData;
+                
+                // Calculate averages
+                const avgEffectiveness = allTreatments.reduce((sum, data) => sum + data.effectiveness, 0) / allTreatments.length;
+                const bestEffectiveness = Math.max(...allTreatments.map(data => data.effectiveness));
+                const worstEffectiveness = Math.min(...allTreatments.map(data => data.effectiveness));
+                
+                const current = window.currentPestReductionData.effectiveness;
+                const comparison = current > avgEffectiveness ? 'above' : 'below';
+                const comparisonColor = current > avgEffectiveness ? '#4CAF50' : '#FF9500';
+                
+                const comparisonResults = `
+                    <h3><img src="images/results-icon.svg" alt="Results" style="width: 20px; height: 20px; margin-right: 8px; vertical-align: middle; filter: var(--icon-filter);"> Performance Comparison</h3>
+                    <div class="result-item">
+                        <span class="result-label">Current Effectiveness:</span>
+                        <span class="result-value">${formatNumber(current)}%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Average (${allTreatments.length} treatments):</span>
+                        <span class="result-value">${formatNumber(avgEffectiveness)}%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Best Previous:</span>
+                        <span class="result-value">${formatNumber(bestEffectiveness)}%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Worst Previous:</span>
+                        <span class="result-value">${formatNumber(worstEffectiveness)}%</span>
+                    </div>
+                    <div class="result-item result-highlight">
+                        <span class="result-label">Performance:</span>
+                        <span class="result-value" style="color: ${comparisonColor}">
+                            ${formatNumber(Math.abs(current - avgEffectiveness))}% ${comparison} average
+                        </span>
+                    </div>
+                `;
+                
+                // Show comparison in the results area
+                showResults('pestReductionResults', comparisonResults);
+                
+            } catch (error) {
+                console.error('Error comparing pest reduction:', error);
+                alert('Error comparing data. Please try again.');
+            }
+        }
+
+        // Override the dropdown change handler to update effectiveness
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for main.js to initialize
+            setTimeout(() => {
+                const dropdowns = document.querySelectorAll('.dropdown-select');
+                dropdowns.forEach(dropdown => {
+                    dropdown.addEventListener('change', () => {
+                        // Update effectiveness display after a short delay
+                        setTimeout(updateEffectivenessDisplay, 100);
+                    });
+                });
+                
+                // Initial effectiveness display update
+                updateEffectivenessDisplay();
+            }, 100);
+        });
+    </script>
+
+</body>
+</html>
+

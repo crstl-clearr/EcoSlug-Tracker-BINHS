@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Sign-In Demo</title>
+  <meta name="google-signin-client_id" content="973644214985-cgb7ehk0d902nhbmja3vkn6ialt8uio9.apps.googleusercontent.com" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Sign in with Google</h2>
+
+  <!-- Google Sign-In Setup -->
+  <div id="g_id_onload"
+       data-client_id="973644214985-cgb7ehk0d902nhbmja3vkn6ialt8uio9.apps.googleusercontent.com"
+       data-context="signin"
+       data-ux_mode="popup"
+       data-callback="handleCredentialResponse"
+       data-auto_prompt="false">
+  </div>
+
+  <!-- Sign-In Button -->
+  <div class="g_id_signin"
+       data-type="standard"
+       data-shape="rectangular"
+       data-theme="outline"
+       data-text="sign_in_with"
+       data-size="large"
+       data-logo_alignment="left">
+  </div>
+
+  <!-- User Info Display -->
+  <div id="user-info" style="margin-top: 20px;"></div>
+
+  <!-- Link to external JS -->
+  <script src="script.js"></script>
+</body>
+</html>
